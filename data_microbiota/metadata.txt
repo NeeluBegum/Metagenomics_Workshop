@@ -1,0 +1,19 @@
+sample	subject	day
+MVB2016-1007	Scinax fuscovarius	Anura
+MVB2016-1008	Scinax fuscovarius	Anura
+MVB2016-1009	Scinax fuscovarius	Anura
+MVB2016-1081	Scinax fuscovarius	Anura
+MVB2016-1082	Scinax fuscovarius	Anura
+MVB2016-1085	Scinax fuscovarius	Anura
+MVB2016-1031	Dragonfly	Odonata
+MVB2016-1032	Dragonfly	Odonata
+MVB2016-1034	Dragonfly	Odonata
+MVB2016-1209	Dragonfly	Odonata
+MVB2016-1212	Dragonfly	Odonata
+MVB2016-1213	Dragonfly	Odonata
+MVB2016-1037	Ranatra	Hemiptera
+MVB2016-1039	Ranatra	Hemiptera
+MVB2016-1040	Ranatra	Hemiptera
+MVB2016-1042	Ranatra	Hemiptera
+MVB2016-1043	Ranatra	Hemiptera
+MVB2016-1044	Ranatra	Hemiptera
