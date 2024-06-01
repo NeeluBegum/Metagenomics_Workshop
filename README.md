@@ -1,6 +1,6 @@
 # Metagenomics_Workshop
 
-This is the repository from the workshop held at Kasetsart university on 11th June 2024. There are two main tools for 16S analysis: QIIME2 and DADA2. This workshop will follow DADA2 as it is easier to install on local computer in R, however, QIIME2 installation and usage can be found in: http://qiime.org/tutorials/index.html. We will be working in R studio for the entire workshop. 
+This is the repository from the workshop held at Kasetsart university on 11th June 2024. There are two main tools for 16S analysis: QIIME2 (Linus and Windows) and DADA2 (R). This workshop will follow DADA2 as it is easier to install on standalone computer in R, however, QIIME2 installation and usage can be found in: http://qiime.org/tutorials/index.html. We will be working in R studio for the entire workshop. 
 
 Please open R studio
 
