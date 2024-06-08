@@ -159,5 +159,35 @@ Now you can check the header for the merged data frame for the first sample or a
 head(mergers[[1]])
 ```
 
-We now need to create a sequence table of ASV (amplicon sequence variant).
+We now need to create a sequence table of ASV (amplicon sequence variant). 
+```
+seqtab <- makeSequenceTable(mergers)
+dim(seqtab)
+```
+You can see from out data that we have 1084 ASVs that are within the V4 range of the 16S primer from our 18 samples.
 
+Assess the distribution of sequence lengths with rows corresponding to the samples, and columns corresponding to sequence variants.
+```
+table(nchar(getSequences(seqtab)))
+```
+
+## Removing Chimeras ##
+
+## Assigning Taxa ##
+
+# Phyloseq#
+
+Upload the packages below
+```
+library(phyloseq); packageVersion("phyloseq")
+library(Biostrings); packageVersion("Biostrings")
+#library(ggplot2); packageVersion("ggplot2")
+library(dplyr)
+theme_set(theme_bw())
+```
+## Contructing our dataframe with metadata ##
+
+
+## Aplha diversity ##
+
+## Beta Diversity ##
