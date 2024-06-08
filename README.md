@@ -145,3 +145,19 @@ There are more parameters that can be applied that helps improve the quality of 
 ```
 help("dada-class")
 ```
+
+## Merging the paired reads ##
+
+Using deionised read pairs for each sample need to be merged but can only happen if the difference between forward and reverse reads are 12 bases. This will contruct the 'contig' sequences.
+
+```
+mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE)
+```
+
+Now you can check the header for the merged data frame for the first sample or a sample at random
+```
+head(mergers[[1]])
+```
+
+We now need to create a sequence table of ASV (amplicon sequence variant).
+
