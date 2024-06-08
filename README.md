@@ -96,19 +96,27 @@ out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs, truncLen=c(240,160),
 head(out)
 ```
 
-## Assessing Error rates ##
-Error rates is something that is unique to obtain ASV
+## Parametric error model ##
+
+Assessing error rates is something that is unique to obtain ASV. It will give you idea about sample composition. This is intensive so only first 
+100M is used to infer error.
 
 ```
 errF <- learnErrors(filtFs, multithread=TRUE)
 ```
-
 27951360 total bases in 116464 reads from 18 samples will be used for learning the error rates.
 
 ```
 errR <- learnErrors(filtRs, multithread=TRUE)
 plotErrors(errF, nominalQ=TRUE)
 ```
-
 18634240 total bases in 116464 reads from 18 samples will be used for learning the error rates.
 
+
+The error rates for each possible transition (A→C, A→G, …) are shown. Points are the observed error rates for each consensus quality score. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. Here the estimated error rates (black line) are a good fit to the observed rates (points), and the error rates drop with increased quality as expected. Everything looks reasonable and we proceed with confidence.
+
+To visualise the estimated error rates use this code:
+```
+plotErrors(errF, nominalQ=TRUE)
+```
+Black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. Here the estimated error rates (black line) are a good fit to the observed rates (points), and the error rates drop with increased quality as expected.
