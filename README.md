@@ -110,8 +110,7 @@ errF <- learnErrors(filtFs, multithread=TRUE)
 errR <- learnErrors(filtRs, multithread=TRUE)
 plotErrors(errF, nominalQ=TRUE)
 ```
-18634240 total bases in 116464 reads from 18 samples will be used for learning the error rates.
-
+18634240 total bases in 116464 reads from 18 samples will be used for learning the error rates. These are the reads that can be used observe the error rates.
 
 The error rates for each possible transition (A→C, A→G, …) are shown. Points are the observed error rates for each consensus quality score. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. Here the estimated error rates (black line) are a good fit to the observed rates (points), and the error rates drop with increased quality as expected. Everything looks reasonable and we proceed with confidence.
 
@@ -120,3 +119,29 @@ To visualise the estimated error rates use this code:
 plotErrors(errF, nominalQ=TRUE)
 ```
 Black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. Here the estimated error rates (black line) are a good fit to the observed rates (points), and the error rates drop with increased quality as expected.
+
+## Unique read assessment for sample inference ##
+This helps infer the composition of the sample by resolving the sequences differences by single nucleotide making the output more informative.
+
+
+Unique sequences in the forward reads
+```
+dadaFs <- dada(filtFs, err=errF, multithread=TRUE)
+```
+
+Obtaining the unique sequences in the reverse reads
+```
+dadaRs <- dada(filtRs, err=errR, multithread=TRUE)
+```
+
+Please see the example in the first sample:
+```
+dadaFs[[1]]
+```
+
+The DADA2 algorithm inferred 325 true sequence variants from the 2822 unique sequences in the first sample. 
+
+There are more parameters that can be applied that helps improve the quality of reads found using:
+```
+help("dada-class")
+```
