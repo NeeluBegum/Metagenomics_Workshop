@@ -31,6 +31,10 @@ library("DESeq2")
 library("ggplot2")
 library("vegan")
 library("structSSI")
+library("dplyr")
+library(phyloseq); packageVersion("phyloseq")
+library(Biostrings); packageVersion("Biostrings")
+theme_set(theme_bw())
 ```
 
 ## Formatting and assessing quality of primers ##
