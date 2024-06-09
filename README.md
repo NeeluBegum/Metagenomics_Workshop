@@ -123,7 +123,6 @@ Black line shows the estimated error rates after convergence of the machine-lear
 ## Unique read assessment for sample inference ##
 This helps infer the composition of the sample by resolving the sequences differences by single nucleotide making the output more informative.
 
-
 Unique sequences in the forward reads
 ```
 dadaFs <- dada(filtFs, err=errF, multithread=TRUE)
@@ -173,9 +172,58 @@ table(nchar(getSequences(seqtab)))
 
 ## Removing Chimeras ##
 
+```
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
+dim(seqtab.nochim)
+```
+
+#abundances of those variants we see they account for less than 0.0001% of the merged sequence reads
+
+```
+sum(seqtab.nochim)/sum(seqtab)
+```
+
+You want to now understand the number of reads getting through the process after removing the removal of chimeras. Upload the function getN and then track bind the dataframe together. Finally, sapply to remove the chimera reads.
+
+```
+getN <- function(x) sum(getUniques(x))
+track <- cbind(out, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
+```
+
+If in the future you just want to process a single sample, then you can simply use the function sapply to replace the chimeras. The option is given below here.
+
+```
+sapply(dadaFs, getN) with getN(dadaFs)
+colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
+rownames(track) <- sample.names
+head(track)
+```
+
 ## Assigning Taxa ##
 
-# Phyloseq#
+Please download the Silva database for our workshop today from first section of this tutorial. You will download silver non-redudant v132 training set.
+
+Upload the data to assign taxonomy
+
+```
+taxa <- assignTaxonomy(seqtab.nochim, "~/taxa/silva_nr_v132_train_set.fa.gz", multithread=TRUE)
+```
+
+Alternatively, you can down load silva database of species to assign species to the data
+
+```
+taxa <- addSpecies(taxa, "~/taxa/silva_species_assignment_v132.fa.gz")
+```
+
+We will need to assign taxonomy information to our reads
+
+```
+taxa.print <- taxa # Removing sequence rownames for display only
+rownames(taxa.print) <- NULL
+head(taxa.print)
+```
+
+# Phyloseq #
 
 Upload the packages below
 ```
@@ -187,7 +235,58 @@ theme_set(theme_bw())
 ```
 ## Contructing our dataframe with metadata ##
 
+We are importing a simple dataframe of metadata.
+
+```
+samdf<-as.data.frame(read.delim("~/data_microbiota/metadata.txt", header=T, sep = "\t", as.is=TRUE), stringAsFactor=F)
+```
+
+Now we need to check that the metadata matches the chimera-removed-data rowname. The answer for the last line should be TRUE. 
+
+```
+samples.out <- rownames(seqtab.nochim)
+rownames(samdf) <- samples.out
+isTRUE(dim(seqtab.nochim)[1] == dim(samdf)[1])
+
+```
+We now want to create OTU/ASV table of information
+
+```
+ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE), 
+               sample_data(samdf), 
+               tax_table(taxa))
+```
+
+Finally, we are labelling the ASV based on taxa name
+
+```
+dna <- Biostrings::DNAStringSet(taxa_names(ps))
+names(dna) <- taxa_names(ps)
+ps <- merge_phyloseq(ps, dna)
+taxa_names(ps) <- paste0("ASV", seq(ntaxa(ps)))
+ps
+```
+
+# Data Analysis #
 
 ## Aplha diversity ##
+
+We can assess the diversity using many alpha diversity index matrix. You can see the table measures using the code below
+
+```
+head(estimate_richness(ps))
+```
+
+This will prune out any ASV not present in the samples but do not prune more than this. Then you can have a plot of the 7 of types of alpha diversity filtering
+```
+alpha_div <- prune_species(speciesSums(ps) > 0, ps)
+plot_richness(alpha_div , color="subject")
+```
+
+
+```
+
+```
+
 
 ## Beta Diversity ##
