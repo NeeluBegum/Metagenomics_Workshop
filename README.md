@@ -188,15 +188,16 @@ You want to now understand the number of reads getting through the process after
 ```
 getN <- function(x) sum(getUniques(x))
 track <- cbind(out, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
+colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
+rownames(track) <- sample.names
+head(track)
 ```
 
 If in the future you just want to process a single sample, then you can simply use the function sapply to replace the chimeras. The option is given below here.
 
 ```
 sapply(dadaFs, getN) with getN(dadaFs)
-colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
-rownames(track) <- sample.names
-head(track)
+
 ```
 
 ## Assigning Taxa ##
