@@ -230,20 +230,12 @@ head(taxa.print)
 
 # Phyloseq #
 
-Upload the packages below
-```
-library(phyloseq); packageVersion("phyloseq")
-library(Biostrings); packageVersion("Biostrings")
-#library(ggplot2); packageVersion("ggplot2")
-library(dplyr)
-theme_set(theme_bw())
-```
 ## Contructing our dataframe with metadata ##
 
 We are importing a simple dataframe of metadata.
 
 ```
-samdf<-as.data.frame(read.delim("~/data_microbiota/metadata.txt", header=T, sep = "\t", as.is=TRUE), stringAsFactor=F)
+samdf<-as.data.frame(read.delim("~/yourpath/data_microbiota/metadata.txt", header=T, sep = "\t", as.is=TRUE), stringAsFactor=F)
 ```
 
 Now we need to check that the metadata matches the chimera-removed-data rowname. The answer for the last line should be TRUE. 
