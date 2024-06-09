@@ -327,7 +327,7 @@ ggplot(prevdf1, aes(TotalAbundance, Prevalence / nsamples(ps),color=Phylum)) +
   facet_wrap(~Phylum) + theme(legend.position="none")
 ```
 
-# Define prevalence threshold as 5% of total samples
+Defining prevalence threshold as 5% of total samples
 ```
 prevalenceThreshold <- 0.05 * nsamples(ps)
 ```
@@ -337,6 +337,9 @@ Removing everything below the threshold by execute prevalence filter using `prun
 keepTaxa <- rownames(prevdf1)[(prevdf1$Prevalence >= prevalenceThreshold)]
 ps1 <- prune_taxa(keepTaxa, ps)
 ```
+
+Now you can visualise the corrected 
+
 
 ### Relative abundance ###
 
@@ -355,7 +358,7 @@ Extract the data from the phyloseq object for relative abundance
 taxa_abundance_table_phylum <- psmelt(ps1_phylum_relabun)
 ```
 
-You can plot the relative abudance of individual phyla found in each organism:
+You can plot the relative abudance of individual phyla found in each organism using boxplot
 ```
 BoxPlot_phylum <- taxa_abundance_table_phylum %>% 
   ggplot(aes(x =Phylum, y = Abundance, fill = Phylum)) +
@@ -373,6 +376,23 @@ BoxPlot_phylum <- taxa_abundance_table_phylum %>%
 BoxPlot_phylum
 ```
 
+Or you can plot the relative abundance with stacked barplot which is more commonly used
+```
+StackedBarPlot_phylum <- taxa_abundance_table_phylum %>% 
+  ggplot(aes(x =Sample, y = Abundance, fill = Phylum)) +
+  geom_bar(stat = "identity") +
+  labs(x = "",
+       y = "Relative Abundance",
+       title = "Phylum Relative Abundance") +
+  facet_grid(~ subject, scales = "free") +
+  theme(
+    axis.text.x = element_text(size = 10, angle = 90, vjust = 0.5, hjust = 1),
+    axis.text.y = element_text(size = 12),
+    legend.text = element_text(size = 10),
+    strip.text = element_text(size = 12)
+  )
+StackedBarPlot_phylum
+```
 ## Alpha diversity ##
 
 We can assess the diversity using many alpha diversity index matrix. You can see the table measures using the code below
@@ -394,11 +414,7 @@ plot_richness(ps, x="subject", measures=c("Shannon", "Simpson"), color="subject"
 
 ## Beta Diversity ##
 
-
-
-```
-
-```
+There are many methods for calculating beta diversity. You can also choose to perform using Multi-dimensional scaling (MDS) uses parametric eigenvalue decomposition or mon-multi dimentional scaling(NMDS) which is non-parametric. MDS is a metric for PCA and uses Euclidean, Manhattan, Hamming etc. NMDS is iterative procedure in calculating data distance within reduced dimensional space. NMDS typically uses bray curtis dissimilaity statistics.
 
 You can plot a PCA to demonstrate the differences of sampling based on the ASV seen in each of the sampling
 ```
