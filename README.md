@@ -268,8 +268,112 @@ ps
 ```
 
 # Data Analysis #
+## Composition and  Relative abundance of the microbiota ##
 
-## Aplha diversity ##
+### Taxonomic filtering ###
+
+We performed the taxonomic anotation previous and we want to check the avaiability of taxonomic ranks available in out data to perform taxonomic filtering
+```
+rank_names(ps)
+```
+
+If there is phylum that has only one then might be worth removing from the data not to skew the output
+```
+ps <- subset_taxa(ps, !is.na(Phylum) & !Phylum %in% c("Thaumarchaeota ", "RsaHf231", "Omnitrophicaeota", "Spirochaetes","Epsilonbacteraeota","Crenarchaeota"))
+```
+
+We are computing prevalence of each feature and storing in our main dataframe
+```
+prevdf <- apply(X = otu_table(ps),
+                MARGIN = ifelse(taxa_are_rows(ps), yes = 1, no = 2),
+                FUN = function(x){sum(x > 0)})
+```
+
+Adding taxonomy and total read counts to this our new dataframe
+```
+prevdf <- data.frame(Prevalence = prevdf,
+                     TotalAbundance = taxa_sums(ps),
+                     tax_table(ps))
+```
+
+Computing the total and average prevalences of each feature
+```
+plyr::ddply(prevdf, "Phylum", function(df1){cbind(mean(df1$Prevalence),sum(df1$Prevalence))})
+```
+
+Define phyla to filter
+```
+filterPhyla <- c("Actinobacteria")
+```
+
+Filter entries with unidentified Phylum
+```
+ps <- subset_taxa(ps, !Phylum %in% filterPhyla)
+ps
+```
+
+Removing 5% threshold for those that are too low with reads per ASV and subsetting the remaining phyla
+```
+prevdf1 <- subset(prevdf, Phylum %in% get_taxa_unique(ps, "Phylum"))
+```
+
+Plotting to see the prevelance of phylum in our samples
+```
+ggplot(prevdf1, aes(TotalAbundance, Prevalence / nsamples(ps),color=Phylum)) +
+  # Include a guess for parameter
+  geom_point(size = 2, alpha = 0.7) +
+  geom_hline(yintercept = 0.05, alpha = 0.5, linetype = 2) +
+  scale_x_log10() +  xlab("Total Abundance") + ylab("Prevalence [Frac. Samples]") +
+  facet_wrap(~Phylum) + theme(legend.position="none")
+```
+
+# Define prevalence threshold as 5% of total samples
+```
+prevalenceThreshold <- 0.05 * nsamples(ps)
+```
+
+Removing everything below the threshold by execute prevalence filter using `prune_taxa()` function
+```
+keepTaxa <- rownames(prevdf1)[(prevdf1$Prevalence >= prevalenceThreshold)]
+ps1 <- prune_taxa(keepTaxa, ps)
+```
+
+### Relative abundance ###
+
+Merge the main data into the phylum level. This can be changed dependent on which classification you are investigating.
+```
+ps1_phylum <- tax_glom(ps1, "Phylum", NArm = TRUE)
+```
+
+Transform the taxa counts to relative abundance
+```
+ps1_phylum_relabun <- transform_sample_counts(ps1_phylum, function(OTU) OTU/sum(OTU) * 100)
+```
+
+Extract the data from the phyloseq object for relative abundance
+```
+taxa_abundance_table_phylum <- psmelt(ps1_phylum_relabun)
+```
+
+You can plot the relative abudance of individual phyla found in each organism:
+```
+BoxPlot_phylum <- taxa_abundance_table_phylum %>% 
+  ggplot(aes(x =Phylum, y = Abundance, fill = Phylum)) +
+  geom_boxplot() +
+  labs(x = "",
+       y = "Relative Abundance",
+       title = "Phylum Relative Abundance") +
+  facet_grid(~ subject, scales = "free") +
+  theme(
+    axis.text.x = element_text(size = 10, angle = 90, vjust = 0.5, hjust = 1),
+    axis.text.y = element_text(size = 12),
+    legend.text = element_text(size = 10),
+    strip.text = element_text(size = 12)
+  )
+BoxPlot_phylum
+```
+
+## Alpha diversity ##
 
 We can assess the diversity using many alpha diversity index matrix. You can see the table measures using the code below
 
@@ -283,10 +387,29 @@ alpha_div <- prune_species(speciesSums(ps) > 0, ps)
 plot_richness(alpha_div , color="subject")
 ```
 
-
+Based on your alpha diversity selection of metrics, you can choose the most preferable to assess results
 ```
-
+plot_richness(ps, x="subject", measures=c("Shannon", "Simpson"), color="subject")
 ```
-
 
 ## Beta Diversity ##
+
+
+
+```
+
+```
+
+You can plot a PCA to demonstrate the differences of sampling based on the ASV seen in each of the sampling
+```
+ps.ord <- ordinate(ps, "NMDS", "bray")
+plot_ordination(ps, ps.ord, type="Phylum", color="subject", shape= "Class", title="ASVs")
+```
+
+Plotted the heatmap of Bray curtis distance matrix to assess the phylum level difference. This code can be changed to look at different levels of class, order, genus etc.
+```
+(ps_phyl <- tax_glom(ps, "Phylum"))
+plot_heatmap(ps_phyl, method = "NMDS", distance = "bray", 
+             taxa.label = "Phylum", taxa.order = "Phylum", 
+             trans=NULL, low="beige", high="red", na.value="beige")
+```
