@@ -267,10 +267,7 @@ taxa_names(ps) <- paste0("ASV", seq(ntaxa(ps)))
 ps
 ```
 
-# Data Analysis #
 ## Composition and  Relative abundance of the microbiota ##
-
-### Taxonomic filtering ###
 
 We performed the taxonomic anotation previous and we want to check the avaiability of taxonomic ranks available in out data to perform taxonomic filtering
 ```
@@ -338,8 +335,7 @@ keepTaxa <- rownames(prevdf1)[(prevdf1$Prevalence >= prevalenceThreshold)]
 ps1 <- prune_taxa(keepTaxa, ps)
 ```
 
-Now you can visualise the corrected 
-
+Now you can visualise the corrected version for relative abundance.
 
 ### Relative abundance ###
 
