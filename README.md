@@ -207,13 +207,13 @@ Please download the Silva database for our workshop today from first section of 
 Upload the data to assign taxonomy
 
 ```
-taxa <- assignTaxonomy(seqtab.nochim, "~/taxa/silva_nr_v132_train_set.fa.gz", multithread=TRUE)
+taxa <- assignTaxonomy(seqtab.nochim, "~/yourpath/taxa/silva_nr_v132_train_set.fa.gz", multithread=TRUE)
 ```
 
 Alternatively, you can down load silva database of species to assign species to the data
 
 ```
-taxa <- addSpecies(taxa, "~/taxa/silva_species_assignment_v132.fa.gz")
+taxa <- addSpecies(taxa, "~/yourpath/taxa/silva_species_assignment_v132.fa.gz")
 ```
 
 We will need to assign taxonomy information to our reads
