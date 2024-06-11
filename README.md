@@ -196,14 +196,6 @@ colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "n
 rownames(track) <- sample.names
 head(track)
 ```
-
-If in the future you just want to process a single sample, then you can simply use the function sapply to replace the chimeras. The option is given below here.
-
-```
-sapply(dadaFs, getN) with getN(dadaFs)
-
-```
-
 ## Assigning Taxa ##
 
 Please download the Silva database for our workshop today from first section of this tutorial. You will download silver non-redudant v132 training set.
